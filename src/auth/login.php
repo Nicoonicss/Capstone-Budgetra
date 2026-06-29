@@ -73,6 +73,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <h1 class="auth-title">Welcome Back</h1>
             <p class="auth-subtitle">Enter your credentials to access your trips.</p>
 
+            <?php if (!empty($_GET['registered'])): ?>
+                <div class="alert alert-success">
+                    Account created! Please log in to continue.
+                </div>
+            <?php endif; ?>
+
             <?php if (!empty($errors)): ?>
                 <div class="alert alert-danger">
                     <?php foreach ($errors as $e): ?>

@@ -38,7 +38,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                  VALUES (?, ?, ?, ?, ?, ?)"
             );
             if ($stmt->execute([$full_name, $email, $hashed, $country, $currency['code'], $currency['symbol']])) {
-                $success = true;
+                header('Location: ' . BASE_URL . '/src/auth/login.php?registered=1');
+                exit;
             } else {
                 $errors[] = "Registration failed. Please try again.";
             }

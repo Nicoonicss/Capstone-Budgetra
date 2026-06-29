@@ -134,7 +134,6 @@ $active_sidebar = 'savings';
     <div class="dash-main">
     <div class="app-content gp-wrapper" style="overflow-y:auto;">
 
-        <div class="gp-step-label">STEP 3: GOAL PROJECTION</div>
         <h1 class="gp-title"><?php echo htmlspecialchars($goal_name); ?></h1>
         <p class="gp-subtitle">
             We've crunched the numbers for your <?php echo htmlspecialchars($dest); ?> adventure.

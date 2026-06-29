@@ -6,9 +6,17 @@ $_sb_init   = strtoupper(substr($_SESSION['user_name'] ?? 'U', 0, 1));
 $_sb_name   = $_SESSION['user_name'] ?? '';
 $_sb_active = $active_sidebar ?? '';
 
-$_sb_s = $pdo->prepare("SELECT * FROM trips WHERE user_id = ? ORDER BY created_at DESC LIMIT 1");
-$_sb_s->execute([$_sb_uid]);
-$_sb_trip = $_sb_s->fetch();
+// Use session-selected trip, fall back to most recent
+if (!empty($_SESSION['current_trip_id'])) {
+    $_sb_s = $pdo->prepare("SELECT * FROM trips WHERE id = ? AND user_id = ?");
+    $_sb_s->execute([$_SESSION['current_trip_id'], $_sb_uid]);
+    $_sb_trip = $_sb_s->fetch();
+}
+if (empty($_sb_trip)) {
+    $_sb_s = $pdo->prepare("SELECT * FROM trips WHERE user_id = ? ORDER BY created_at DESC LIMIT 1");
+    $_sb_s->execute([$_sb_uid]);
+    $_sb_trip = $_sb_s->fetch();
+}
 
 $_sb_s2 = $pdo->prepare("SELECT COUNT(*) FROM notifications WHERE user_id = ? AND is_read = FALSE");
 $_sb_s2->execute([$_sb_uid]);

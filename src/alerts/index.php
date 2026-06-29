@@ -129,7 +129,25 @@ $body_class = 'dashboard-body';
 
     <!-- ══ MAIN ═════════════════════════════════════════ -->
     <div class="dash-main">
-        <div class="dash-content">
+        <div class="dash-content" style="display:flex;flex-direction:column;">
+
+        <?php if (empty($smart_alerts) && empty($db_notifications)): ?>
+
+            <!-- ── Empty state ──────────────────────────────── -->
+            <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;
+                        flex:1;text-align:center;padding:40px 24px;">
+                <div style="width:72px;height:72px;border-radius:20px;background:#FDF0E8;
+                            display:flex;align-items:center;justify-content:center;
+                            font-size:30px;margin-bottom:20px;">
+                    <i class="fa-regular fa-bell" style="color:var(--primary);"></i>
+                </div>
+                <h2 style="font-size:22px;font-weight:800;margin:0 0 8px;">All caught up!</h2>
+                <p style="color:var(--muted);font-size:14px;max-width:300px;margin:0;">
+                    No notifications yet. We'll alert you when your budget needs attention.
+                </p>
+            </div>
+
+        <?php else: ?>
 
             <!-- Page header -->
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px;">
@@ -155,7 +173,6 @@ $body_class = 'dashboard-body';
             </div>
 
             <?php if (!empty($smart_alerts)): ?>
-            <!-- Smart budget alerts -->
             <div class="chart-card" style="margin-bottom:20px;">
                 <div class="chart-card-header" style="margin-bottom:16px;">
                     <span class="chart-card-title">Budget Alerts</span>
@@ -208,24 +225,31 @@ $body_class = 'dashboard-body';
                     </span>
                     <?php endif; ?>
                 </div>
-
-                <?php if (empty($db_notifications)): ?>
-                <div style="text-align:center;padding:48px 24px;color:var(--muted);">
-                    <i class="fa-regular fa-bell-slash" style="font-size:36px;margin-bottom:12px;display:block;opacity:.4;"></i>
-                    <div style="font-size:15px;font-weight:600;margin-bottom:6px;">All caught up!</div>
-                    <div style="font-size:13px;">No notifications yet. We'll alert you when your budget needs attention.</div>
-                </div>
-                <?php else: ?>
                 <div style="display:flex;flex-direction:column;gap:2px;">
                     <?php foreach ($db_notifications as $n):
                         $is_unread = !$n['is_read'];
+                        $ntype = $n['type'];
+                        if (str_starts_with($ntype, 'cat_exceeded_') || $ntype === 'budget_exceeded') {
+                            $n_icon = 'fa-triangle-exclamation'; $n_bg = '#FEF2F2'; $n_color = '#DC2626';
+                        } elseif (str_starts_with($ntype, 'cat_warning_') || $ntype === 'trip_ending'
+                               || in_array($ntype, ['budget_90', 'budget_75'])) {
+                            $n_icon = 'fa-circle-exclamation'; $n_bg = '#FEF9E8'; $n_color = '#D4A412';
+                        } elseif (str_starts_with($ntype, 'cat_success_')) {
+                            $n_icon = 'fa-circle-check'; $n_bg = '#F0FDF4'; $n_color = '#16A34A';
+                        } elseif ($ntype === 'trip_created') {
+                            $n_icon = 'fa-plane'; $n_bg = '#EFF6FF'; $n_color = '#1565C0';
+                        } else {
+                            $n_icon = 'fa-bell'; $n_bg = '#FDF0E8'; $n_color = 'var(--primary)';
+                        }
                     ?>
                     <div style="display:flex;align-items:flex-start;gap:14px;padding:14px 10px;
                                 border-radius:10px;background:<?php echo $is_unread ? '#FDFAF7' : 'transparent'; ?>;
                                 border-bottom:1px solid var(--border);">
-                        <div class="alert-item-icon <?php echo $n['type'] === 'danger' ? 'danger' : 'warning'; ?>"
-                             style="flex-shrink:0;">
-                            <i class="fa-solid fa-triangle-exclamation"></i>
+                        <div style="width:36px;height:36px;border-radius:50%;flex-shrink:0;
+                                    background:<?php echo $n_bg; ?>;
+                                    display:flex;align-items:center;justify-content:center;
+                                    color:<?php echo $n_color; ?>;font-size:14px;">
+                            <i class="fa-solid <?php echo $n_icon; ?>"></i>
                         </div>
                         <div style="flex:1;min-width:0;">
                             <div style="font-size:14px;font-weight:<?php echo $is_unread ? '700' : '500'; ?>;
@@ -250,8 +274,9 @@ $body_class = 'dashboard-body';
                     </div>
                     <?php endforeach; ?>
                 </div>
-                <?php endif; ?>
             </div>
+
+        <?php endif; ?>
 
         </div><!-- /dash-content -->
     </div><!-- /dash-main -->

@@ -52,7 +52,7 @@ $is_logged_in = is_logged_in();
                 Plan and manage travel expenses before, during, and after your trip using real-time API data and OCR receipt scanning.
             </p>
             <div class="hero-actions">
-                <a href="<?php echo BASE_URL; ?>/src/auth/register.php" class="btn btn-primary btn-lg">
+                <a href="<?php echo BASE_URL; ?>/src/auth/login.php" class="btn btn-primary btn-lg">
                     Get Started for Free
                 </a>
                 <a href="#features" class="btn btn-outline btn-lg">
@@ -220,7 +220,7 @@ $is_logged_in = is_logged_in();
     <div class="cta-card">
         <h2>Ready to travel without financial stress?</h2>
         <p>Join 50,000+ travelers who use Budgetra to keep their adventures on track and under budget.</p>
-        <a href="<?php echo BASE_URL; ?>/src/auth/register.php" class="btn btn-white btn-lg">
+        <a href="<?php echo BASE_URL; ?>/src/auth/login.php" class="btn btn-white btn-lg">
             Get Started for Free
         </a>
     </div>

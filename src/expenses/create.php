@@ -84,24 +84,69 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             );
             $stmt->execute([$amount_usd, $trip_id_post, $bcat]);
 
-            // Budget alert
-            $stmt = $pdo->prepare("SELECT budget_limit FROM trips WHERE id = ?");
+            // Per-category budget notifications
+            $stmt = $pdo->prepare("SELECT destination, end_date FROM trips WHERE id = ?");
             $stmt->execute([$trip_id_post]);
             $trip_row = $stmt->fetch();
-            if (!empty($trip_row['budget_limit'])) {
-                $stmt = $pdo->prepare("SELECT SUM(amount) as total FROM expenses WHERE trip_id = ?");
-                $stmt->execute([$trip_id_post]);
-                $total_spent_usd = (float)($stmt->fetch()['total'] ?? 0);
-                $pct = ($total_spent_usd / $trip_row['budget_limit']) * 100;
-                $type = $msg = '';
-                if ($pct >= 100)      { $type = 'budget_exceeded'; $msg = "You've exceeded your budget for this trip!"; }
-                elseif ($pct >= 90)   { $type = 'budget_90';       $msg = "You've used 90% of your trip budget!"; }
-                elseif ($pct >= 75)   { $type = 'budget_75';       $msg = "You've used 75% of your trip budget!"; }
-                if ($type) {
-                    $stmt = $pdo->prepare(
+            $dest = $trip_row['destination'] ?? '';
+
+            $stmt = $pdo->prepare(
+                "SELECT estimated_cost, actual_spent FROM trip_budgets WHERE trip_id = ? AND category = ?"
+            );
+            $stmt->execute([$trip_id_post, $bcat]);
+            $budget_row = $stmt->fetch();
+
+            if ($budget_row && (float)$budget_row['estimated_cost'] > 0) {
+                $budget_cat = (float)$budget_row['estimated_cost'];
+                $spent_cat  = (float)$budget_row['actual_spent'];
+                $pct_cat    = ($spent_cat / $budget_cat) * 100;
+
+                // Replace any previous threshold notification for this category
+                $pdo->prepare(
+                    "DELETE FROM notifications WHERE trip_id = ? AND type IN (?, ?, ?)"
+                )->execute([
+                    $trip_id_post,
+                    'cat_exceeded_' . $bcat,
+                    'cat_warning_'  . $bcat,
+                    'cat_success_'  . $bcat,
+                ]);
+
+                $cat_type = $cat_msg = '';
+                if ($pct_cat >= 100) {
+                    $over     = format_currency(($spent_cat - $budget_cat) * $cur_rate, $cur_symbol);
+                    $cat_type = 'cat_exceeded_' . $bcat;
+                    $cat_msg  = $bcat . ' budget exceeded — you\'re ' . $over . ' over for ' . $dest . '.';
+                } elseif ($pct_cat >= 80) {
+                    $left     = format_currency(($budget_cat - $spent_cat) * $cur_rate, $cur_symbol);
+                    $cat_type = 'cat_warning_' . $bcat;
+                    $cat_msg  = $bcat . ' at ' . round($pct_cat) . '% — ' . $left . ' remaining for ' . $dest . '.';
+                } elseif ($pct_cat > 0 && $pct_cat <= 30) {
+                    $cat_type = 'cat_success_' . $bcat;
+                    $cat_msg  = 'Great progress on ' . $bcat . '! Only ' . round($pct_cat) . '% used for ' . $dest . '.';
+                }
+                if ($cat_type) {
+                    $pdo->prepare(
                         "INSERT INTO notifications (user_id, trip_id, type, message) VALUES (?, ?, ?, ?)"
+                    )->execute([$user_id, $trip_id_post, $cat_type, $cat_msg]);
+                }
+            }
+
+            // Trip-ending-soon notification (insert once per trip)
+            if (!empty($trip_row['end_date'])) {
+                $days_left = (int)ceil((strtotime($trip_row['end_date']) - time()) / 86400);
+                if ($days_left > 0 && $days_left <= 3) {
+                    $chk = $pdo->prepare(
+                        "SELECT id FROM notifications WHERE trip_id = ? AND type = 'trip_ending' LIMIT 1"
                     );
-                    $stmt->execute([$user_id, $trip_id_post, $type, $msg]);
+                    $chk->execute([$trip_id_post]);
+                    if (!$chk->fetch()) {
+                        $pdo->prepare(
+                            "INSERT INTO notifications (user_id, trip_id, type, message) VALUES (?, ?, ?, ?)"
+                        )->execute([
+                            $user_id, $trip_id_post, 'trip_ending',
+                            'Your trip to ' . $dest . ' ends in ' . $days_left . ' day' . ($days_left > 1 ? 's' : '') . '. Review your budget!',
+                        ]);
+                    }
                 }
             }
 
@@ -133,7 +178,7 @@ $active_sidebar = 'reports';
 <div class="dashboard-wrapper">
     <?php require_once __DIR__ . '/../../includes/sidebar.php'; ?>
     <div class="dash-main">
-    <div class="app-content" style="overflow-y:auto;">
+    <div class="app-content">
         <div class="scan-page-grid">
 
             <!-- ── LEFT: Upload + Form ───────────────────── -->
@@ -356,22 +401,6 @@ $active_sidebar = 'reports';
             </div>
 
         </div><!-- /scan-page-grid -->
-    </div><!-- /app-content -->
-
-    <footer class="app-footer">
-        <div class="app-footer-inner">
-            <div>
-                <div class="app-footer-brand">Budgetra</div>
-                <div class="app-footer-sub">© 2024 Budgetra. Smart travel, smarter spending.</div>
-            </div>
-            <div class="app-footer-links">
-                <div class="app-footer-col">
-                    <a href="#">Contact</a>
-                    <a href="#">Privacy Policy</a>
-                    <a href="#">Terms of Service</a>
-                </div>
-            </div>
-        </div>
     </div><!-- /app-content -->
     </div><!-- /dash-main -->
 </div><!-- /dashboard-wrapper -->

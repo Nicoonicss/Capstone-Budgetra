@@ -101,9 +101,9 @@ if (empty($_SESSION['user_currency_rate'])) {
 
 // ── Cost presets (USD base, per 5 days, 1 traveler) ───────────────────────
 $presets = [
-    'Budget'    => ['transport' => 400,  'accom' => 350,  'food' => 200,  'attractions' => 100, 'shopping' => 120, 'emergency' => 80],
-    'Mid-range' => ['transport' => 850,  'accom' => 800,  'food' => 400,  'attractions' => 250, 'shopping' => 300, 'emergency' => 150],
-    'Luxury'    => ['transport' => 2200, 'accom' => 2800, 'food' => 1200, 'attractions' => 600, 'shopping' => 800, 'emergency' => 400],
+    'Shoestring/Backpacker' => ['transport' => 400,  'accom' => 350,  'food' => 200,  'attractions' => 100, 'shopping' => 120, 'emergency' => 80],
+    'Mid-range'             => ['transport' => 850,  'accom' => 800,  'food' => 400,  'attractions' => 250, 'shopping' => 300, 'emergency' => 150],
+    'Luxury/Premium'        => ['transport' => 2200, 'accom' => 2800, 'food' => 1200, 'attractions' => 600, 'shopping' => 800, 'emergency' => 400],
 ];
 
 $p    = $presets[$budget_tier] ?? $presets['Mid-range'];
@@ -141,9 +141,9 @@ $variance = max(1, (int)($c_total * 0.05));
 
 // ── Comfort badge ─────────────────────────────────────────────────────────
 $comfort_map = [
-    'Budget'    => ['label' => 'STANDARD', 'color' => '#16A34A', 'bg' => '#F0FDF4'],
-    'Mid-range' => ['label' => 'COMFORT',  'color' => '#E07B2A', 'bg' => '#FEF3E8'],
-    'Luxury'    => ['label' => 'PREMIUM',  'color' => '#8B3A10', 'bg' => '#FDF0E8'],
+    'Shoestring/Backpacker' => ['label' => 'STANDARD', 'color' => '#16A34A', 'bg' => '#F0FDF4'],
+    'Mid-range'             => ['label' => 'COMFORT',  'color' => '#E07B2A', 'bg' => '#FEF3E8'],
+    'Luxury/Premium'        => ['label' => 'PREMIUM',  'color' => '#8B3A10', 'bg' => '#FDF0E8'],
 ];
 $comfort = $comfort_map[$budget_tier] ?? $comfort_map['Mid-range'];
 
@@ -155,9 +155,9 @@ if (str_contains($d, 'japan') || str_contains($d, 'tokyo') || str_contains($d, '
     $tip = "Bali's dry season (May–September) sees peak pricing. Traveling in shoulder season can save you up to 20% on accommodation.";
 } elseif (str_contains($d, 'europe') || str_contains($d, 'paris') || str_contains($d, 'rome') || str_contains($d, 'london')) {
     $tip = "European city travel in summer (July–August) commands a premium. Consider visiting in May, June, or September for better rates.";
-} elseif ($budget_tier === 'Budget') {
-    $tip = "Traveling on a budget? Opt for hostels, local street food, and free attractions to stretch your funds further.";
-} elseif ($budget_tier === 'Luxury') {
+} elseif ($budget_tier === 'Shoestring/Backpacker') {
+    $tip = "Traveling on a shoestring? Opt for hostels, local street food, and free attractions to stretch your funds further.";
+} elseif ($budget_tier === 'Luxury/Premium') {
     $tip = "For a premium experience, consider a travel concierge to handle reservations and private tours seamlessly.";
 } else {
     $tip = "Book your accommodation and flights at least 21 days in advance to secure the best rates for " . htmlspecialchars($dest_val) . ".";
@@ -181,7 +181,7 @@ $active_sidebar = 'planner';
 <div class="dashboard-wrapper">
     <?php require_once __DIR__ . '/../../includes/sidebar.php'; ?>
     <div class="dash-main">
-    <div class="app-content" style="overflow-y:auto;">
+    <div class="app-content">
 
         <?php if (!empty($errors)): ?>
             <div class="alert alert-danger" style="margin-bottom:20px;">
@@ -200,15 +200,6 @@ $active_sidebar = 'planner';
                         <?php echo htmlspecialchars($dest_val ?: 'your destination'); ?>
                     </a>.
                 </p>
-            </div>
-            <div class="step-indicator">
-                <div class="step-indicator-top">
-                    <span class="step-text">Step 2 of 3</span>
-                    <span class="step-pct">66% Complete</span>
-                </div>
-                <div class="step-progress-track">
-                    <div class="step-progress-fill" style="width:66%;"></div>
-                </div>
             </div>
         </div>
 
@@ -326,24 +317,8 @@ $active_sidebar = 'planner';
         </form>
 
     </div><!-- /app-content -->
-
-    <footer class="app-footer">
-        <div class="app-footer-inner">
-            <div>
-                <div class="app-footer-brand">Budgetra</div>
-                <div class="app-footer-sub">© 2024 Budgetra. Smart travel, smarter spending.</div>
-            </div>
-            <div class="app-footer-links">
-                <div class="app-footer-col">
-                    <a href="#">Contact</a>
-                    <a href="#">Privacy Policy</a>
-                    <a href="#">Terms of Service</a>
-                    <a href="#">FAQ</a>
-                </div>
-            </div>
-        </div>
-    </footer>
-</div>
+    </div><!-- /dash-main -->
+</div><!-- /dashboard-wrapper -->
 
 <script>
 var curSymbol = <?php echo json_encode($cur_symbol); ?>;
@@ -398,10 +373,6 @@ document.addEventListener('keydown', function(e) {
     }
 });
 </script>
-
-    </div><!-- /app-content -->
-    </div><!-- /dash-main -->
-</div><!-- /dashboard-wrapper -->
 
 </body>
 </html>

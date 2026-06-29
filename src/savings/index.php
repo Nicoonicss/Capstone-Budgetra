@@ -11,11 +11,30 @@ $cur_symbol = $_SESSION['user_currency_symbol'] ?? '$';
 $cur_rate   = (float)($_SESSION['user_currency_rate'] ?? 1.0);
 if ($cur_rate <= 0) $cur_rate = 1.0;
 
-$stmt = $pdo->prepare(
-    "SELECT sg.*, t.destination FROM savings_goals sg
+// Remove orphaned goals (no matching trip) and duplicate goals per trip
+// Keep only the most recent goal per trip
+$pdo->prepare(
+    "DELETE sg FROM savings_goals sg
      LEFT JOIN trips t ON sg.trip_id = t.id
+     WHERE sg.user_id = ? AND t.id IS NULL"
+)->execute([$user_id]);
+
+$pdo->prepare(
+    "DELETE sg FROM savings_goals sg
+     INNER JOIN savings_goals sg2
+       ON sg.trip_id = sg2.trip_id
+       AND sg.user_id = sg2.user_id
+       AND sg.id < sg2.id
+     WHERE sg.user_id = ?"
+)->execute([$user_id]);
+
+// Fetch goals that have a matching trip (INNER JOIN ensures only planner trips)
+$stmt = $pdo->prepare(
+    "SELECT sg.*, t.destination, t.start_date AS trip_start, t.end_date AS trip_end
+     FROM savings_goals sg
+     INNER JOIN trips t ON sg.trip_id = t.id AND t.user_id = sg.user_id
      WHERE sg.user_id = ?
-     ORDER BY sg.created_at DESC"
+     ORDER BY t.start_date ASC"
 );
 $stmt->execute([$user_id]);
 $savings_goals = $stmt->fetchAll();
@@ -34,32 +53,37 @@ $active_sidebar = 'savings';
 <div class="dashboard-wrapper">
     <?php require_once __DIR__ . '/../../includes/sidebar.php'; ?>
     <div class="dash-main">
-    <div class="app-content" style="max-width:900px;overflow-y:auto;">
-
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;">
-            <div>
-                <div style="font-size:11px;font-weight:700;letter-spacing:.1em;color:var(--primary);text-transform:uppercase;margin-bottom:4px;">
-                    SAVINGS GOALS
-                </div>
-                <h1 style="font-size:clamp(22px,3.5vw,30px);font-weight:800;margin:0;">Your Travel Funds</h1>
-            </div>
-            <a href="<?php echo BASE_URL; ?>/src/trips/type.php" class="btn btn-primary btn-sm">
-                <i class="fa-solid fa-plus"></i> New Goal
-            </a>
-        </div>
+    <div class="app-content" style="max-width:900px;display:flex;flex-direction:column;">
 
         <?php if (empty($savings_goals)): ?>
-            <div class="chart-card" style="text-align:center;padding:56px 24px;">
-                <div style="font-size:48px;margin-bottom:16px;">🎯</div>
-                <div style="font-size:18px;font-weight:700;margin-bottom:8px;">No savings goals yet</div>
-                <div style="font-size:14px;color:var(--muted);margin-bottom:24px;">
-                    Create your first trip plan to start building a savings goal.
+            <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;
+                        flex:1;text-align:center;padding:40px 24px;">
+                <div style="width:72px;height:72px;border-radius:20px;background:#FDF0E8;
+                            display:flex;align-items:center;justify-content:center;
+                            font-size:30px;margin-bottom:20px;">
+                    <i class="fa-regular fa-circle-dot" style="color:var(--primary);"></i>
                 </div>
+                <h2 style="font-size:22px;font-weight:800;margin:0 0 8px;">No savings goals yet</h2>
+                <p style="color:var(--muted);font-size:14px;max-width:300px;margin:0 0 24px;">
+                    Create your first trip to start building your savings goal.
+                </p>
                 <a href="<?php echo BASE_URL; ?>/src/trips/type.php" class="btn btn-primary">
                     <i class="fa-solid fa-plane"></i> Plan a Trip
                 </a>
             </div>
         <?php else: ?>
+            <div style="display:flex;align-items:center;justify-content:space-between;
+                        flex-wrap:wrap;gap:12px;margin-bottom:28px;">
+                <div>
+                    <div style="font-size:11px;font-weight:700;letter-spacing:.1em;
+                                color:var(--primary);text-transform:uppercase;margin-bottom:4px;">
+                        SAVINGS GOAL
+                    </div>
+                    <h1 style="font-size:clamp(20px,3vw,26px);font-weight:800;margin:0;">
+                        My Savings Goals
+                    </h1>
+                </div>
+            </div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
                 <?php foreach ($savings_goals as $g):
                     $t_usd   = (float)$g['target_amount'];

@@ -26,10 +26,29 @@ if (empty($_SESSION['user_currency_rate'])) {
     }
 }
 
-// Active trip (most recent)
-$stmt = $pdo->prepare("SELECT * FROM trips WHERE user_id = ? ORDER BY created_at DESC LIMIT 1");
-$stmt->execute([$user_id]);
-$active_trip = $stmt->fetch();
+// Active trip: prefer ?trip_id=X (stored in session), else most recent
+if (!empty($_GET['trip_id'])) {
+    $req_id = intval($_GET['trip_id']);
+    $stmt = $pdo->prepare("SELECT * FROM trips WHERE id = ? AND user_id = ?");
+    $stmt->execute([$req_id, $user_id]);
+    $active_trip = $stmt->fetch();
+    if ($active_trip) {
+        $_SESSION['current_trip_id'] = $active_trip['id'];
+    }
+}
+if (empty($active_trip)) {
+    if (!empty($_SESSION['current_trip_id'])) {
+        $stmt = $pdo->prepare("SELECT * FROM trips WHERE id = ? AND user_id = ?");
+        $stmt->execute([$_SESSION['current_trip_id'], $user_id]);
+        $active_trip = $stmt->fetch();
+    }
+    if (empty($active_trip)) {
+        $stmt = $pdo->prepare("SELECT * FROM trips WHERE user_id = ? ORDER BY created_at DESC LIMIT 1");
+        $stmt->execute([$user_id]);
+        $active_trip = $stmt->fetch();
+        if ($active_trip) $_SESSION['current_trip_id'] = $active_trip['id'];
+    }
+}
 
 // All trips
 $stmt = $pdo->prepare("SELECT * FROM trips WHERE user_id = ? ORDER BY created_at DESC");

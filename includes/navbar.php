@@ -46,7 +46,7 @@ $current_dir  = basename(dirname($_SERVER['PHP_SELF']));
                 <a href="<?php echo BASE_URL; ?>/src/auth/logout.php" class="btn btn-outline btn-sm">Logout</a>
             <?php else: ?>
                 <a href="<?php echo BASE_URL; ?>/src/auth/login.php" class="btn btn-outline btn-sm">Login</a>
-                <a href="<?php echo BASE_URL; ?>/src/auth/register.php" class="btn btn-primary btn-sm">Get Started for Free</a>
+                <a href="<?php echo BASE_URL; ?>/src/auth/login.php" class="btn btn-primary btn-sm">Get Started for Free</a>
             <?php endif; ?>
         </div>
 

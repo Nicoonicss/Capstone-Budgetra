@@ -1298,13 +1298,58 @@ body.dashboard-body {
 .gp-finish-btn:hover { opacity: .9; transform: translateY(-1px); }
 .gp-footer-note { font-size: 13px; color: var(--muted); margin: 0; }
 
+/* ══ PLANNER — MY TRIPS LIST ═══════════════════════ */
+.planner-trips-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 18px;
+}
+.planner-trip-card {
+  background: #fff; border: 1.5px solid var(--border); border-radius: 14px;
+  padding: 20px; display: flex; flex-direction: column; gap: 16px;
+  transition: box-shadow 0.15s;
+}
+.planner-trip-card:hover { box-shadow: 0 4px 18px rgba(0,0,0,0.07); }
+.planner-trip-card-head {
+  display: flex; align-items: flex-start; gap: 12px; justify-content: space-between;
+}
+.planner-trip-icon {
+  width: 40px; height: 40px; border-radius: 10px; flex-shrink: 0;
+  background: var(--primary-light); color: var(--primary);
+  display: flex; align-items: center; justify-content: center; font-size: 16px;
+}
+.planner-trip-dest {
+  font-size: 16px; font-weight: 700; color: var(--text);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.planner-trip-meta { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.planner-trip-badge {
+  font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 99px;
+  flex-shrink: 0; white-space: nowrap;
+}
+.planner-trip-budget { /* budget bar area */ }
+.planner-trip-actions {
+  display: flex; gap: 10px; align-items: center; margin-top: 4px;
+}
+.planner-action-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 13px; font-weight: 600; padding: 8px 14px; border-radius: 8px;
+  text-decoration: none; border: none; cursor: pointer; transition: all 0.15s;
+}
+.planner-action-view {
+  background: var(--primary); color: #fff; flex: 1; justify-content: center;
+}
+.planner-action-view:hover { background: var(--primary-dark); color: #fff; }
+.planner-action-delete {
+  background: #FEF2F2; color: #DC2626; border: 1.5px solid #FECACA;
+}
+.planner-action-delete:hover { background: #DC2626; color: #fff; border-color: #DC2626; }
+
 /* ══ TRIP TYPE SELECTION PAGE ══════════════════════ */
 .trip-type-page {
   display: flex; flex-direction: column; align-items: center;
   justify-content: center; min-height: calc(100vh - 160px);
   padding: 48px 20px; text-align: center;
 }
-.trip-type-header { margin-bottom: 48px; }
+.trip-type-header { margin-bottom: 48px; text-align: center; }
 .trip-type-title {
   font-size: clamp(28px, 5vw, 42px); font-weight: 800;
   color: var(--text); margin-bottom: 12px;
