@@ -8,9 +8,6 @@
         <h1>Dashboard</h1>
         <p class="text-muted">Welcome back, {{ auth()->user()?->full_name ?? '' }}!</p>
     </div>
-    <a href="{{ route('trips.plan') }}" class="btn btn-primary">
-        <i class="fa-solid fa-plus"></i> Plan New Trip
-    </a>
 </div>
 
 {{-- Aggregate stat cards --}}
@@ -89,13 +86,6 @@
         <div style="font-size:14px;font-weight:600;color:#6B7280;">Plan New Adventure</div>
         <div style="font-size:12px;color:#9CA3AF;text-align:center;">Start tracking your next destination today.</div>
     </a>
-</div>
-@else
-<div style="text-align:center;padding:56px 24px;">
-    <div style="font-size:48px;margin-bottom:14px;">✈️</div>
-    <h3 style="font-weight:700;margin-bottom:8px;">No trips yet</h3>
-    <p class="text-muted" style="margin-bottom:20px;">Start planning your first adventure!</p>
-    <a href="{{ route('trips.plan') }}" class="btn btn-primary btn-lg">Plan Your First Trip</a>
 </div>
 @endif
 

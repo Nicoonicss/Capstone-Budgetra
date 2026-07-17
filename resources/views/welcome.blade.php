@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Budgetra — Plan Smart. Travel More.</title>
+    <link rel="icon" type="image/png" href="{{ asset('systemicons/budgetra-favicon.png') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -16,16 +17,10 @@
 <nav class="site-navbar">
     <div class="container-nav">
         <div class="nav-brand">
-            <div class="nav-brand-icon">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5">
-                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-                    <polyline points="9 22 9 12 15 12 15 22"/>
-                </svg>
-            </div>
-            Budgetra
+            <img src="{{ asset('systemicons/budgetra-main.png') }}" alt="Budgetra" style="height:56px;width:auto;">
         </div>
-        <div class="nav-actions">
-            <a href="{{ route('login') }}" class="btn btn-primary btn-sm">Log In</a>
+        <div class="nav-actions" style="margin-left:auto;">
+            <a href="{{ route('login') }}" class="btn btn-sm" style="background:rgba(255,255,255,.15);color:#fff;border:1.5px solid rgba(255,255,255,.4);backdrop-filter:blur(6px);">Login</a>
         </div>
     </div>
 </nav>
@@ -40,11 +35,11 @@
         <div class="hero-badge" style="background:rgba(255,255,255,.18);color:#fff;backdrop-filter:blur(6px);">
             <i class="fa-solid fa-location-dot"></i> Next-Gen Travel Finance
         </div>
-        <h1 class="hero-title" style="color:#fff;text-shadow:0 2px 20px rgba(0,0,0,.4);">Web-Based Smart Vacation Budget Planning and Expense Management System</h1>
+        <h1 class="hero-title" style="color:#fff;text-shadow:0 2px 20px rgba(0,0,0,.4);">Smart Vacation Budget Planning and Expense Management System</h1>
         <p class="hero-subtitle" style="color:rgba(255,255,255,.85);text-shadow:0 1px 8px rgba(0,0,0,.3);">Plan and manage travel expenses before, during, and after your trip using real-time API data and OCR receipt scanning.</p>
         <div class="hero-actions">
             <a href="{{ route('register') }}" class="btn btn-primary btn-lg">Get Started for Free</a>
-            <a href="#features" class="btn btn-lg" style="background:rgba(255,255,255,.15);color:#fff;border:2px solid rgba(255,255,255,.4);backdrop-filter:blur(6px);">
+            <a href="{{ route('features') }}" class="btn btn-lg" style="background:rgba(255,255,255,.15);color:#fff;border:2px solid rgba(255,255,255,.4);backdrop-filter:blur(6px);">
                 <i class="fa-regular fa-circle-play"></i> How it works
             </a>
         </div>
@@ -70,14 +65,14 @@
             <div class="bento-icon bento-icon-light">
                 <i class="fa-regular fa-calendar"></i>
             </div>
-            <h3>Vacation Budget Planner</h3>
-            <p style="font-size:14px;color:var(--muted);margin:8px 0 20px;">Comprehensive planning suite that syncs with your travel calendar to predict daily spend.</p>
+            <h3 style="color:#fff;">Vacation Budget Planner</h3>
+            <p style="font-size:14px;color:#fff;margin:8px 0 20px;">Comprehensive planning suite that syncs with your travel calendar to predict daily spend.</p>
 
             {{-- Budget overview mini-card --}}
-            <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:16px;">
+            <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:16px;text-shadow:none;">
                 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
-                    <span style="font-size:13px;font-weight:600;">Budget Overview</span>
-                    <span style="font-size:12px;color:var(--muted);">14 Days</span>
+                    <span style="font-size:13px;font-weight:600;color:#1A1A2E;text-shadow:none;">Budget Overview</span>
+                    <span style="font-size:12px;color:var(--muted);text-shadow:none;">14 Days</span>
                 </div>
                 <div style="display:flex;align-items:center;gap:16px;">
                     {{-- Donut chart --}}
@@ -137,7 +132,7 @@
                     <i class="fa-solid fa-credit-card"></i>
                 </div>
                 <h3>Expense Tracking</h3>
-                <p style="font-size:14px;color:var(--muted);margin:8px 0 20px;">Real-time currency conversion and categorization for every transaction abroad.</p>
+                <p style="font-size:14px;color:#fff;margin:8px 0 20px;">Real-time currency conversion and categorization for every transaction abroad.</p>
                 <div>
                     <div class="expense-item">
                         <div class="expense-avatar" style="background:var(--primary-light);color:var(--primary);">D</div>
@@ -169,7 +164,7 @@
                     <i class="fa-solid fa-file-invoice"></i>
                 </div>
                 <h3>OCR Scanning</h3>
-                <p style="font-size:14px;color:var(--dark);opacity:0.8;margin:8px 0 20px;">Instantly scan and parse receipts from anywhere in the world – no manual entry.</p>
+                <p style="font-size:14px;color:#fff;margin:8px 0 20px;">Instantly scan and parse receipts from anywhere in the world – no manual entry.</p>
                 {{-- Receipt skeleton preview --}}
                 <div style="background:rgba(255,255,255,0.5);border-radius:10px;padding:14px;">
                     <div style="height:8px;background:rgba(0,0,0,0.15);border-radius:4px;margin-bottom:8px;width:80%;"></div>
@@ -184,21 +179,30 @@
     </div>{{-- end features-section-inner --}}
 </section>
 
-{{-- ── CTA ──────────────────────────────────────────────── --}}
-<div class="cta-section-wrap">
-<section class="cta-section">
-    <div class="cta-card">
-        <h2>Ready to travel without financial stress?</h2>
-        <p>Join 50,000+ travelers who use Budgetra to keep their adventures on track and under budget.</p>
-        <a href="{{ route('register') }}" class="btn btn-white btn-lg">Get Started for Free</a>
-    </div>
-</section>
+{{-- ── CTA + Footer (shared video background) ─────────────── --}}
+<div class="cta-footer-wrap">
+    <video class="features-video-bg" autoplay muted loop playsinline>
+        <source src="{{ asset('stockvideos/hero-fullbleed.mp4') }}" type="video/mp4">
+    </video>
+    <div class="features-video-overlay" style="background:rgba(0,0,0,.5);"></div>
+
+    <section class="cta-section">
+        <div class="cta-card-glass">
+            <h2 style="color:#fff;font-size:clamp(28px,4vw,48px);font-weight:800;text-shadow:0 2px 20px rgba(0,0,0,.5);margin-bottom:16px;">Ready to travel without financial stress?</h2>
+            <p style="color:rgba(255,255,255,.85);font-size:17px;line-height:1.7;max-width:520px;margin:0 auto 32px;text-shadow:0 1px 8px rgba(0,0,0,.4);">Join 50,000+ travelers who use Budgetra to keep their adventures on track and under budget.</p>
+            <a href="{{ route('register') }}" class="btn btn-primary btn-lg">Get Started for Free</a>
+        </div>
+    </section>
+
+    <footer class="site-footer" style="background:transparent;border-top:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.7);">
+        © {{ date('Y') }} Budgetra. Smart travel, smarter spending.
+    </footer>
 </div>
 
-{{-- ── Footer ───────────────────────────────────────────── --}}
-<footer class="site-footer">
-    © {{ date('Y') }} Budgetra. Smart travel, smarter spending.
-</footer>
-
+@if (!empty($scrollToFeatures))
+<script>
+    document.getElementById('features').scrollIntoView({ behavior: 'smooth' });
+</script>
+@endif
 </body>
 </html>

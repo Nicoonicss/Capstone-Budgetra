@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Account — Budgetra</title>
+    <link rel="icon" type="image/png" href="{{ asset('systemicons/budgetra-favicon.png') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -15,37 +16,11 @@
 <div class="auth-wrapper">
 
     {{-- Left panel --}}
-    <div class="auth-panel-left-register">
-        <div>
-            <div class="brand-title">Budgetra</div>
-            <p>Start your journey with confidence. Plan, track, and save for your dream destinations without the math-anxiety.</p>
-            <div class="auth-trip-card">
-                <div style="display:flex;align-items:center;gap:10px;">
-                    <div style="width:36px;height:36px;background:rgba(255,255,255,0.2);border-radius:9px;display:flex;align-items:center;justify-content:center;">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2">
-                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-                            <circle cx="12" cy="10" r="3"/>
-                        </svg>
-                    </div>
-                    <div>
-                        <div class="trip-name">Summer Euro Trip</div>
-                        <div class="trip-meta">4 Countries · 14 Days</div>
-                    </div>
-                </div>
-                <div class="trip-progress-wrap">
-                    <div class="trip-budget">
-                        <span class="trip-budget-label">Budget Goal: $4,500</span>
-                        <span class="trip-percent">75% Reached</span>
-                    </div>
-                    <div class="progress">
-                        <div class="progress-bar progress-bar-yellow" style="width:75%;"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="auth-register-img">
-            <img src="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=400&h=250&fit=crop&auto=format"
-                 alt="Travel" onerror="this.style.display='none';">
+    <div class="auth-panel-left-register" style="position:relative;overflow:hidden;padding:0;">
+        <div style="position:absolute;inset:0;background-image:url('{{ asset('stockimages/registersidebar.jpg') }}');background-size:cover;background-position:center;filter:blur(3px);transform:scale(1.05);"></div>
+        <div style="position:absolute;inset:0;background:rgba(0,0,0,.25);"></div>
+        <div style="position:relative;z-index:2;height:100%;display:flex;align-items:center;justify-content:center;">
+            <img src="{{ asset('systemicons/budgetra-main.png') }}" alt="Budgetra" style="max-width:200px;width:60%;">
         </div>
     </div>
 
@@ -173,9 +148,6 @@
 
             <div style="text-align:center;margin-top:32px;font-size:12px;color:var(--muted);">
                 © {{ date('Y') }} Budgetra. Smart travel, smarter spending.
-                &nbsp;·&nbsp; <a href="#" style="color:var(--muted);">Support</a>
-                &nbsp;·&nbsp; <a href="#" style="color:var(--muted);">Privacy</a>
-                &nbsp;·&nbsp; <a href="#" style="color:var(--muted);">Security</a>
             </div>
         </div>
     </div>

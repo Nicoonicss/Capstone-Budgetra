@@ -20,12 +20,13 @@ class LoginController extends Controller
 
         if (auth()->attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
+            $request->session()->put('collapse_sidebar', true);
 
             if (auth()->user()->role === 'admin') {
                 return redirect()->route('admin.dashboard');
             }
 
-            return redirect()->intended(route('dashboard'));
+            return redirect()->intended(route('trips.index'));
         }
 
         return back()

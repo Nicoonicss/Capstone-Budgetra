@@ -44,4 +44,13 @@ return [
         'endpoint' => 'https://api.ocr.space/parse/image',
     ],
 
+    'gemini' => [
+        'key'      => env('GEMINI_API_KEY', ''),
+        'endpoint' => 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent',
+    ],
+
+    'serpapi' => [
+        'key' => env('SERPAPI_KEY', ''),
+    ],
+
 ];

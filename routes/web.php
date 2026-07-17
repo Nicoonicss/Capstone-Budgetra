@@ -8,6 +8,10 @@ Route::get('/', function () {
     return auth()->check() ? redirect('/dashboard') : view('welcome');
 });
 
+Route::get('/features', function () {
+    return view('welcome', ['scrollToFeatures' => true]);
+})->name('features');
+
 // Guest-only routes (redirect to dashboard if already logged in)
 Route::middleware('guest')->group(function () {
     Route::get('/login',    [Auth\LoginController::class, 'showForm'])->name('login');

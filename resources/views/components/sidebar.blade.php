@@ -1,17 +1,25 @@
 @props(['active' => ''])
 @php
-    $user      = auth()->user();
-    $userInit  = strtoupper(substr($user->full_name ?? 'U', 0, 1));
-    $trip      = $user ? $user->trips()->latest('start_date')->first() : null;
-    $unread    = $user ? $user->notifications()->where('is_read', false)->count() : 0;
+    $user   = auth()->user();
+    $userInit = strtoupper(substr($user->full_name ?? 'U', 0, 1));
+    $trip   = $user ? $user->trips()->latest('start_date')->first() : null;
+    $unread = $user ? $user->notifications()->where('is_read', false)->count() : 0;
 
     $links = [
-        ['href' => url('/dashboard'),  'icon' => 'fa-solid fa-house',            'label' => 'Dashboard',   'key' => 'dashboard'],
-        ['href' => url('/trips'),      'icon' => 'fa-solid fa-map-location-dot', 'label' => 'Planner',     'key' => 'trips'],
-        ['href' => url('/savings'),    'icon' => 'fa-solid fa-piggy-bank',       'label' => 'Savings Goal','key' => 'savings'],
-        ['href' => url('/itinerary'),  'icon' => 'fa-regular fa-calendar-days',  'label' => 'Itinerary',   'key' => 'itinerary'],
-        ['href' => url('/expenses'),   'icon' => 'fa-solid fa-receipt',          'label' => 'Expenses',    'key' => 'expenses'],
-        ['href' => url('/alerts'),     'icon' => 'fa-regular fa-bell',           'label' => 'Alerts',      'key' => 'alerts', 'badge' => $unread],
+        ['href' => url('/dashboard'),  'icon' => 'fa-solid fa-house',            'label' => 'Dashboard',    'key' => 'dashboard'],
+        ['href' => url('/trips'),      'icon' => 'fa-solid fa-map-location-dot', 'label' => 'Planner',      'key' => 'trips'],
+        ['href' => url('/trips'),      'icon' => 'fa-solid fa-suitcase-rolling', 'label' => 'Saved Trips',  'key' => 'saved-trips'],
+        ['href' => url('/savings'),    'icon' => 'fa-solid fa-piggy-bank',       'label' => 'Saving Goals', 'key' => 'savings'],
+        ['href' => url('/itinerary'),  'icon' => 'fa-regular fa-calendar-days',  'label' => 'Itinerary',    'key' => 'itinerary'],
+        ['href' => url('/expenses'),   'icon' => 'fa-solid fa-receipt',          'label' => 'Expenses',     'key' => 'expenses'],
+        ['href' => url('/alerts'),     'icon' => 'fa-regular fa-bell',           'label' => 'Notifications','key' => 'alerts', 'badge' => $unread],
+        ['href' => url('/trips'),      'icon' => 'fa-solid fa-layer-group',      'label' => 'Multi Trips',  'key' => 'multi-trips'],
+        ['href' => url('/itinerary'),  'icon' => 'fa-regular fa-images',         'label' => 'Moments',      'key' => 'moments'],
+    ];
+
+    $bottomLinks = [
+        ['href' => url('/profile'),  'icon' => 'fa-regular fa-user-circle', 'label' => 'Profile',  'key' => 'profile'],
+        ['href' => url('/dashboard'),'icon' => 'fa-solid fa-gear',          'label' => 'Settings', 'key' => 'settings'],
     ];
 @endphp
 
@@ -49,18 +57,25 @@
         @endforeach
     </nav>
 
-    <div class="sidebar-avatar-wrap">
-        <div class="sidebar-avatar">{{ $userInit }}</div>
-        <div class="sidebar-user-details">
-            <div class="sidebar-user-name">{{ $user->full_name ?? 'Traveler' }}</div>
-            <div class="sidebar-user-email">Traveler</div>
-        </div>
-        <form method="POST" action="{{ route('logout') }}" style="margin:0;">
-            @csrf
-            <button type="submit" class="sidebar-logout-btn" title="Logout">
-                <i class="fa-solid fa-right-from-bracket"></i>
-            </button>
-        </form>
+    {{-- Logout button --}}
+    <form method="POST" action="{{ route('logout') }}" style="padding:0 12px;margin:8px 0;">
+        @csrf
+        <button type="submit" class="sidebar-new-trip-btn" title="Logout">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            <span class="sidebar-link-label" style="margin-left:8px;">Logout</span>
+        </button>
+    </form>
+
+    {{-- Bottom links: Profile, Settings --}}
+    <div class="sidebar-bottom-links">
+        @foreach ($bottomLinks as $link)
+        <a href="{{ $link['href'] }}"
+           class="sidebar-link {{ $active === $link['key'] ? 'active' : '' }}"
+           title="{{ $link['label'] }}">
+            <i class="{{ $link['icon'] }}"></i>
+            <span class="sidebar-link-label">{{ $link['label'] }}</span>
+        </a>
+        @endforeach
     </div>
 
 </aside>
