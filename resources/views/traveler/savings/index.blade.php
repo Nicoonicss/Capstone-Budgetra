@@ -13,7 +13,7 @@
 @endif
 
 @if ($goals->isEmpty())
-<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:70vh;text-align:center;">
+<div class="empty-state-center">
     <div style="width:72px;height:72px;border-radius:20px;background:#F5EDE7;display:flex;align-items:center;justify-content:center;margin-bottom:20px;">
         <i class="fa-solid fa-piggy-bank" style="font-size:32px;color:var(--primary);"></i>
     </div>

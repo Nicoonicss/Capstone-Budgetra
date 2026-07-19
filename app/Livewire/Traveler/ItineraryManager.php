@@ -9,13 +9,37 @@ use Livewire\Component;
 
 class ItineraryManager extends Component
 {
-    // Step 1: trip not yet chosen; Step 2: calendar shown
     public ?int    $selectedTripId    = null;
-
-    // Modals
     public ?string $selectedDate      = null;
-    public bool    $showGenerateModal = false;  // ask to generate for clicked date
-    public bool    $showDayModal      = false;  // show existing items for clicked date
+    public bool    $showGenerateModal = false;
+    public bool    $showDayModal      = false;
+
+    public function mount(): void
+    {
+        $trips = $this->getTripsProperty();
+        if ($trips->count() === 1) {
+            $this->selectedTripId = $trips->first()->id;
+        }
+    }
+
+    public function updatedSelectedTripId(): void
+    {
+        $this->selectedDate      = null;
+        $this->showGenerateModal = false;
+        $this->showDayModal      = false;
+        if ($this->selectedTripId) {
+            $trip = $this->getSelectedTripProperty();
+            if ($trip) {
+                $this->dispatch('trip-selected',
+                    start:  $trip->start_date->toDateString(),
+                    end:    $trip->end_date->clone()->addDay()->toDateString(),
+                    events: $this->getEventsProperty(),
+                );
+            }
+        } else {
+            $this->dispatch('trip-cleared');
+        }
+    }
 
     public function selectTrip(int $tripId): void
     {
@@ -24,7 +48,6 @@ class ItineraryManager extends Component
         $this->selectedDate      = null;
         $this->showGenerateModal = false;
         $this->showDayModal      = false;
-
         $this->dispatch('trip-selected',
             start:  $trip->start_date->toDateString(),
             end:    $trip->end_date->clone()->addDay()->toDateString(),
@@ -175,15 +198,29 @@ class ItineraryManager extends Component
     public function getEventsProperty(): array
     {
         if (!$this->selectedTripId) return [];
+
+        $colorMap = [
+            'Flight'         => ['bg' => '#EFF6FF', 'border' => '#1D4ED8', 'text' => '#1D4ED8', 'icon' => 'plane'],
+            'Hotel'          => ['bg' => '#F0FDF4', 'border' => '#16A34A', 'text' => '#16A34A', 'icon' => 'bed'],
+            'Transportation' => ['bg' => '#FFF7ED', 'border' => '#D97706', 'text' => '#D97706', 'icon' => 'car'],
+            'Activity'       => ['bg' => '#F5EDE7', 'border' => '#8B3A10', 'text' => '#8B3A10', 'icon' => 'camera'],
+        ];
+
         return Itinerary::where('trip_id', $this->selectedTripId)
+            ->orderBy('start_datetime')
             ->get()
-            ->map(fn($i) => [
-                'title'           => $i->title,
-                'start'           => $i->start_datetime->format('Y-m-d\TH:i:s'),
-                'backgroundColor' => '#8B3A10',
-                'borderColor'     => '#8B3A10',
-                'textColor'       => '#fff',
-            ])
+            ->map(function ($i) use ($colorMap) {
+                $c = $colorMap[$i->type] ?? $colorMap['Activity'];
+                return [
+                    'title'           => $i->title,
+                    'start'           => $i->start_datetime->format('Y-m-d\TH:i:s'),
+                    'backgroundColor' => $c['bg'],
+                    'borderColor'     => $c['border'],
+                    'textColor'       => $c['text'],
+                    'extendedProps'   => ['icon' => $c['icon'], 'type' => $i->type],
+                    'display'         => 'block',
+                ];
+            })
             ->toArray();
     }
 

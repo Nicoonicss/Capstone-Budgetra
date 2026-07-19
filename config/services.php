@@ -49,8 +49,16 @@ return [
         'endpoint' => 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent',
     ],
 
+    'groq' => [
+        'key' => env('GROQ_API_KEY', ''),
+    ],
+
     'serpapi' => [
         'key' => env('SERPAPI_KEY', ''),
+    ],
+
+    'serper' => [
+        'key' => env('SERPER_KEY', ''),
     ],
 
 ];

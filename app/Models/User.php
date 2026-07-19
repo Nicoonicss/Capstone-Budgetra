@@ -29,4 +29,5 @@ class User extends Authenticatable
     public function notifications(){ return $this->hasMany(Notification::class); }
     public function reviews()     { return $this->hasMany(Review::class); }
     public function ocrLogs()     { return $this->hasMany(OcrLog::class); }
+    public function userProfile() { return $this->hasOne(UserProfile::class); }
 }

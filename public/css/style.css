@@ -811,7 +811,8 @@ button:disabled { opacity: 0.65; cursor: not-allowed; }
 }
 
 /* Dashboard content */
-.dash-content { padding: 28px 32px; flex: 1; }
+.dash-content { padding: 28px 32px; flex: 1; display: flex; flex-direction: column; }
+.empty-state-center { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; min-height: 60vh; }
 
 /* Smooth page fade-in */
 @keyframes dashFadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }

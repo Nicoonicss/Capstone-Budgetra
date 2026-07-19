@@ -129,11 +129,15 @@
         <p class="text-muted" style="margin-bottom:20px;">Try a different search term.</p>
     </div>
     @elseif ($this->trips->isEmpty())
-    <div style="text-align:center;padding:40px 24px;">
-        <div style="font-size:40px;margin-bottom:12px;">✈️</div>
-        <h3 style="font-weight:700;margin-bottom:8px;">No trips yet</h3>
-        <p class="text-muted" style="margin-bottom:20px;">Start planning your first adventure and track every expense.</p>
-        <a href="{{ route('trips.plan') }}" class="btn btn-primary btn-lg">Plan Your First Trip</a>
+    <div class="empty-state-center">
+        <div style="width:72px;height:72px;border-radius:20px;background:#F5EDE7;display:flex;align-items:center;justify-content:center;margin-bottom:20px;">
+            <i class="fa-solid fa-layer-group" style="font-size:32px;color:var(--primary);"></i>
+        </div>
+        <h2 style="font-weight:700;margin-bottom:8px;">No trips yet</h2>
+        <p class="text-muted" style="max-width:320px;margin-bottom:24px;">Start planning your first adventure and track every expense.</p>
+        <a href="{{ route('trips.plan') }}" class="btn btn-primary btn-lg">
+            <i class="fa-solid fa-paper-plane"></i> Plan Your First Trip
+        </a>
     </div>
     @endif
 

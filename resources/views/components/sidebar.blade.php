@@ -1,14 +1,12 @@
 @props(['active' => ''])
 @php
     $user   = auth()->user();
-    $userInit = strtoupper(substr($user->full_name ?? 'U', 0, 1));
-    $trip   = $user ? $user->trips()->latest('start_date')->first() : null;
     $unread = $user ? $user->notifications()->where('is_read', false)->count() : 0;
 
     $links = [
         ['href' => url('/dashboard'),  'icon' => 'fa-solid fa-house',            'label' => 'Dashboard',    'key' => 'dashboard'],
         ['href' => url('/trips'),      'icon' => 'fa-solid fa-map-location-dot', 'label' => 'Planner',      'key' => 'trips'],
-        ['href' => url('/trips'),      'icon' => 'fa-solid fa-suitcase-rolling', 'label' => 'Saved Trips',  'key' => 'saved-trips'],
+        ['href' => route('saved-trips'), 'icon' => 'fa-solid fa-suitcase-rolling', 'label' => 'Saved Trips',  'key' => 'saved-trips'],
         ['href' => url('/savings'),    'icon' => 'fa-solid fa-piggy-bank',       'label' => 'Saving Goals', 'key' => 'savings'],
         ['href' => url('/itinerary'),  'icon' => 'fa-regular fa-calendar-days',  'label' => 'Itinerary',    'key' => 'itinerary'],
         ['href' => url('/expenses'),   'icon' => 'fa-solid fa-receipt',          'label' => 'Expenses',     'key' => 'expenses'],
@@ -18,7 +16,7 @@
     ];
 
     $bottomLinks = [
-        ['href' => url('/profile'),  'icon' => 'fa-regular fa-user-circle', 'label' => 'Profile',  'key' => 'profile'],
+        ['href' => auth()->user()?->userProfile ? url('/profile') : url('/profile/setup'), 'icon' => 'fa-regular fa-user-circle', 'label' => 'Profile', 'key' => 'profile'],
         ['href' => url('/dashboard'),'icon' => 'fa-solid fa-gear',          'label' => 'Settings', 'key' => 'settings'],
     ];
 @endphp
@@ -29,18 +27,10 @@
         <i class="fa-solid fa-bars" id="sidebarToggleIcon"></i>
     </button>
 
-    <div class="sidebar-brand">
-        <div class="sidebar-trip-badge"><span>Active Workspace</span></div>
-        <div class="sidebar-trip-name">
-            <span>{{ $trip->destination ?? 'My Trips' }}</span>
-        </div>
-        <div class="sidebar-trip-status">
-            @if ($trip)
-                <span>{{ $trip->start_date->format('M d') }} &ndash; {{ $trip->end_date->format('M d, Y') }}</span>
-            @else
-                <span>No active trip</span>
-            @endif
-        </div>
+    <div class="sidebar-brand" style="display:flex;align-items:center;gap:10px;padding:18px 16px 14px;">
+        <img src="{{ asset('systemicons/budgetra-main.png') }}" alt="Budgetra"
+             style="width:38px;height:38px;border-radius:10px;object-fit:contain;flex-shrink:0;">
+        <span class="sidebar-link-label" style="font-size:18px;font-weight:800;color:var(--primary);letter-spacing:0.01em;">Budgetra</span>
     </div>
 
     <nav class="sidebar-nav">

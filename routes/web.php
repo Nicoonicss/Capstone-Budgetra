@@ -28,9 +28,11 @@ Route::post('/logout', [Auth\LoginController::class, 'logout'])
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [Traveler\DashboardController::class, '__invoke'])->name('dashboard');
 
-    Route::get('/profile', [Traveler\ProfileController::class, 'edit'])->name('profile.edit');
-    Route::put('/profile',  [Traveler\ProfileController::class, 'update'])->name('profile.update');
+    Route::get('/profile',         [Traveler\ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile',         [Traveler\ProfileController::class, 'update'])->name('profile.update');
+    Route::get('/profile/setup',   \App\Livewire\Traveler\ProfileBuilder::class)->name('profile.setup');
 
+    Route::get('/saved-trips',             \App\Livewire\Traveler\SavedTrips::class)->name('saved-trips');
     Route::get('/trips',                  \App\Livewire\Traveler\TripPlannerWizard::class)->name('trips.index');
     Route::get('/trips/plan',             \App\Livewire\Traveler\TripPlannerWizard::class)->name('trips.plan');
     Route::get('/trips/type',             [Traveler\TripController::class, 'type'])->name('trips.type');

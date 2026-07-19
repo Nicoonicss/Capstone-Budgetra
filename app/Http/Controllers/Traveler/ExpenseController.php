@@ -16,7 +16,11 @@ class ExpenseController extends Controller
         $trips = $user->trips()->latest()->get();
         $query = $user->expenses()->with('trip')->latest('expense_date');
 
-        if ($request->filled('trip_id'))   $query->where('trip_id', $request->trip_id);
+        // Auto-filter to the only trip when there's just one
+        $tripId = $request->filled('trip_id') ? $request->trip_id
+                : ($trips->count() === 1 ? $trips->first()->id : null);
+
+        if ($tripId)                       $query->where('trip_id', $tripId);
         if ($request->filled('category'))  $query->where('category', $request->category);
         if ($request->filled('date_from')) $query->where('expense_date', '>=', $request->date_from);
         if ($request->filled('date_to'))   $query->where('expense_date', '<=', $request->date_to);
